@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MJ Representações — Sistema Web</title>
+<style>
+:root{--navy:#071a3a;--navy2:#0e2d5c;--blue:#0b55d6;--gold:#d4a13a;--green:#159447;--red:#dc2626;--orange:#ea8b00;--bg:#f4f6f9;--card:#fff;--text:#162238;--muted:#6b778c;--line:#e5e9ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer}.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:linear-gradient(180deg,#06152f,#0b2550);color:#fff;padding:24px 14px;position:fixed;inset:0 auto 0 0}
+.logo{font-size:30px;font-weight:900;text-align:center}.logo span{color:var(--gold)}.rep{text-align:center;font-size:11px;letter-spacing:2px;margin-bottom:28px}
+.menu button{display:flex;gap:12px;width:100%;padding:13px 14px;margin:4px 0;border:0;border-radius:9px;background:transparent;color:#dce6f7;text-align:left}.menu button:hover,.menu button.active{background:#0c58c9;color:#fff}
+.sidebar-foot{position:absolute;bottom:20px;left:20px;font-size:12px;color:#9eb0cb}
+.main{margin-left:250px;flex:1}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:4}
+.search{width:330px;border:1px solid var(--line);border-radius:9px;padding:11px 14px}.page{padding:25px 28px;max-width:1500px;margin:auto}.page h1{margin:0 0 5px;font-size:25px}.sub{color:var(--muted);font-size:13px}
+.screen{display:none}.screen.active{display:block}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:20px 0}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px;box-shadow:0 2px 7px #1020400a}.kpi small{color:var(--muted)}.kpi strong{display:block;font-size:22px;margin-top:8px}.blue{color:var(--blue)}.green{color:var(--green)}.red{color:var(--red)}.gold{color:#a97000}.orange{color:var(--orange)}
+.cols{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:14px}.card h3{margin:0 0 14px;font-size:15px}.list{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}.list:last-child{border:0}.muted{color:var(--muted);font-size:12px}
+.btn{border:0;border-radius:9px;padding:11px 15px;background:var(--navy);color:#fff;font-weight:700}.btn.blue{background:var(--blue);color:#fff}.btn.goldbtn{background:var(--gold);color:#fff}.btn.greenbtn{background:var(--green);color:#fff}.btn.light{background:#edf2f7;color:var(--navy)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.field{margin-bottom:13px}input,select{width:100%;padding:11px;border:1px solid #d8dee8;border-radius:8px;background:#fff}.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;background:#fff}.tablewrap{overflow:auto}.tablewrap th,.tablewrap td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}.tablewrap th{background:#f8fafc;color:#5d6a7d}.status{padding:5px 8px;border-radius:20px;font-size:11px;font-weight:700}.s-paid{background:#dcfce7;color:#166534}.s-open{background:#fff4d6;color:#8a5a00}.s-late{background:#fee2e2;color:#b91c1c}
+.modal{position:fixed;inset:0;background:#071a3a88;display:none;align-items:center;justify-content:center;z-index:10;padding:20px}.modal.show{display:flex}.modalbox{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;padding:22px}
+.toast{position:fixed;right:22px;bottom:22px;background:#12294d;color:#fff;padding:13px 18px;border-radius:9px;display:none;z-index:20}.toast.show{display:block}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.cols{grid-template-columns:1fr}.search{width:240px}}
+@media(max-width:760px){.sidebar{width:70px;padding:20px 8px}.logo{font-size:23px}.rep,.menu span,.sidebar-foot{display:none}.menu button{justify-content:center}.main{margin-left:70px}.top{padding:0 15px}.search{width:180px}.page{padding:18px 14px}.kpis{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="logo">M<span>J</span></div><div class="rep">REPRESENTAÇÕES</div>
+<nav class="menu">
+<button onclick="show('dashboard',this)" class="active">▣ <span>Dashboard</span></button>
+<button onclick="show('vendas',this)">🛒 <span>Vendas</span></button>
+<button onclick="show('clientes',this)">👥 <span>Clientes</span></button>
+<button onclick="show('cobrancas',this)">💰 <span>Cobranças</span></button>
+<button onclick="show('recebidos',this)">✓ <span>Pagamentos recebidos</span></button>
+<button onclick="show('notas',this)">📷 <span>Notas / Documentos</span></button>
+<button onclick="show('produtos',this)">📦 <span>Produtos</span></button>
+<button onclick="show('relatorios',this)">▥ <span>Relatórios</span></button>
+</nav>
+<div class="sidebar-foot">MJ REPRESENTAÇÕES<br>Versão Web 1.0</div>
+</aside>
+<main class="main">
+<header class="top"><input id="globalSearch" class="search" placeholder="Buscar cliente, venda, nota..." oninput="globalSearch(this.value)"><div><b>Marcos</b> · Administrador</div></header>
+
+<section id="dashboard" class="screen active page">
+<h1>Dashboard</h1><div class="sub">Visão geral das vendas e cobranças</div>
+<div class="kpis">
+<div class="card kpi"><small>Vendas no período</small><strong class="blue" id="kVenda">R$ 0,00</strong></div>
+<div class="card kpi"><small>Recebidos</small><strong class="green" id="kReceb">R$ 0,00</strong></div>
+<div class="card kpi"><small>A receber</small><strong class="gold" id="kAbrir">R$ 0,00</strong></div>
+<div class="card kpi"><small>Atrasados</small><strong class="red" id="kAtraso">R$ 0,00</strong></div>
+<div class="card kpi"><small>Clientes</small><strong class="blue" id="kClientes">0</strong></div>
+</div>
+<div class="cols">
+<div class="card"><h3>Vendas por cidade</h3><div id="cityReport"></div></div>
+<div class="card"><h3>Cobranças prioritárias</h3><div id="dashCharges"></div></div>
+<div class="card"><h3>Ações rápidas</h3><div class="actions"><button class="btn blue" onclick="openSale()">+ Nova venda</button><button class="btn greenbtn" onclick="openClient()">+ Novo cliente</button><button class="btn goldbtn" onclick="show('cobrancas')">Ver cobranças</button><button class="btn light" onclick="show('relatorios')">Relatórios</button></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Vendas recentes</h3><div class="tablewrap"><table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Total</th><th>Recebido</th><th>Saldo</th><th>Status</th></tr></thead><tbody id="dashSales"></tbody></table></div></div>
+</section>
+
+<section id="vendas" class="screen page"><div class="rowhead"><h1>Vendas</h1><button class="btn blue" onclick="openSale()">+ Nova venda</button></div><div class="card" style="margin-top:18px"><div class="tablewrap"><table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Total</th><th>Recebido</th><th>A receber</th><th>Vencimento</th><th>Status</th></tr></thead><tbody id="salesTable"></tbody></table></div></div></section>
+
+<section id="clientes" class="screen page"><div class="rowhead"><h1>Clientes</h1><button class="btn greenbtn" onclick="openClient()">+ Novo cliente</button></div><div class="card" style="margin-top:18px"><div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Telefone</th><th>Cidade</th><th>Total vendido</th><th>A receber</th></tr></thead><tbody id="clientsTable"></tbody></table></div></div></section>
+
+<section id="cobrancas" class="screen page"><h1>Cobranças</h1><div class="sub">Valores em aberto e vencidos</div><div class="card" style="margin-top:18px"><div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Nota</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Ação</th></tr></thead><tbody id="chargesTable"></tbody></table></div></div></section>
+
+<section id="recebidos" class="screen page"><h1>Pagamentos recebidos</h1><div class="card" style="margin-top:18px"><div class="tablewrap"><table><thead><tr><th>Data</th><th>Cliente</th><th>Valor</th><th>Forma</th><th>Referência</th></tr></thead><tbody id="paymentsTable"></tbody></table></div></div></section>
+
+<section id="notas" class="screen page"><h1>Notas / Documentos</h1><div class="sub">Arquivo das notas vinculadas às vendas</div><div class="card" style="margin-top:18px"><div id="notesList"></div></div></section>
+
+<section id="produtos" class="screen page"><div class="rowhead"><h1>Produtos</h1><button class="btn blue" onclick="openProduct()">+ Novo produto</button></div><div class="card" style="margin-top:18px"><div class="tablewrap"><table><thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th></tr></thead><tbody id="productsTable"></tbody></table></div></div></section>
+
+<section id="relatorios" class="screen page"><h1>Relatórios</h1><div class="sub">Resumo comercial</div><div class="kpis"><div class="card kpi"><small>Ticket médio</small><strong id="ticket">R$ 0,00</strong></div><div class="card kpi"><small>Taxa recebida</small><strong id="taxa">0%</strong></div><div class="card kpi"><small>Vendas</small><strong id="qtdVendas">0</strong></div></div><div class="card"><h3>Vendas por cidade</h3><div id="reportFull"></div></div></section>
+</main></div>
+
+<div id="modal" class="modal"><div class="modalbox" id="modalBox"></div></div><div id="toast" class="toast"></div>
+<script>
+const key='mj_representacoes_v1';
+let db=JSON.parse(localStorage.getItem(key)||'null')||{
+clients:[
+{id:1,name:'João da Silva',phone:'(19) 99999-8888',city:'Campinas - SP'},
+{id:2,name:'Maria Aparecida',phone:'(16) 98888-7777',city:'São José do Rio Preto - SP'},
+{id:3,name:'Pedro Henrique',phone:'(15) 99111-2222',city:'Sorocaba - SP'},
+{id:4,name:'Ana Paula',phone:'(11) 97555-4444',city:'Jundiaí - SP'}],
+products:[{id:1,name:'Produto A',price:120,stock:50},{id:2,name:'Produto B',price:80,stock:80},{id:3,name:'Produto C',price:50,stock:120}],
+sales:[
+{id:12,date:'2026-08-23',client:1,city:'Campinas - SP',total:470,received:200,due:'2026-09-07',note:'Nota 000012'},
+{id:11,date:'2026-08-22',client:2,city:'São José do Rio Preto - SP',total:350,received:0,due:'2026-08-10',note:'Nota 000011'},
+{id:10,date:'2026-08-21',client:3,city:'Ribeirão Preto - SP',total:560,received:0,due:'2026-08-15',note:'Nota 000010'},
+{id:9,date:'2026-08-20',client:4,city:'Jundiaí - SP',total:410,received:0,due:'2026-09-05',note:'Nota 000009'},
+{id:8,date:'2026-08-19',client:3,city:'Sorocaba - SP',total:180,received:180,due:'2026-09-20',note:'Nota 000008'}],
+payments:[{date:'2026-08-23',client:1,value:200,method:'PIX',ref:'Venda 000012'},{date:'2026-08-22',client:2,value:350,method:'PIX',ref:'Venda 000011'},{date:'2026-08-19',client:3,value:180,method:'Dinheiro',ref:'Venda 000008'}],
+notes:[{sale:12,note:'Nota 000012',date:'2026-08-23'}]
+};
+function save(){localStorage.setItem(key,JSON.stringify(db))}
+function br(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function client(id){return db.clients.find(x=>x.id==id)||{name:'—',city:'—'}}
+function status(s){let sal=s.total-s.received;if(sal<=0)return '<span class="status s-paid">Pago</span>';let late=new Date(s.due+'T23:59:59')<new Date();return late?'<span class="status s-late">Atrasada</span>':'<span class="status s-open">A vencer</span>'}
+function totals(){let t=db.sales.reduce((a,s)=>a+s.total,0),r=db.sales.reduce((a,s)=>a+s.received,0);let late=db.sales.filter(s=>s.total>s.received&&new Date(s.due+'T23:59:59')<new Date()).reduce((a,s)=>a+s.total-s.received,0);return {t,r,o:t-r,late}}
+function render(){
+let t=totals();kVenda.textContent=br(t.t);kReceb.textContent=br(t.r);kAbrir.textContent=br(t.o);kAtraso.textContent=br(t.late);kClientes.textContent=db.clients.length;
+dashSales.innerHTML=db.sales.slice(0,8).map(s=>`<tr><td>${String(s.id).padStart(6,'0')}</td><td>${s.date}</td><td>${client(s.client).name}</td><td>${s.city}</td><td>${br(s.total)}</td><td>${br(s.received)}</td><td class="red">${br(s.total-s.received)}</td><td>${status(s)}</td></tr>`).join('');
+salesTable.innerHTML=db.sales.map(s=>`<tr><td>${String(s.id).padStart(6,'0')}</td><td>${s.date}</td><td>${client(s.client).name}</td><td>${s.city}</td><td>${br(s.total)}</td><td>${br(s.received)}</td><td>${br(s.total-s.received)}</td><td>${s.due}</td><td>${status(s)}</td></tr>`).join('');
+clientsTable.innerHTML=db.clients.map(c=>{let ss=db.sales.filter(s=>s.client==c.id);let total=ss.reduce((a,s)=>a+s.total,0),open=ss.reduce((a,s)=>a+s.total-s.received,0);return `<tr><td><b>${c.name}</b></td><td>${c.phone}</td><td>${c.city}</td><td>${br(total)}</td><td class="gold">${br(open)}</td></tr>`}).join('');
+chargesTable.innerHTML=db.sales.filter(s=>s.total>s.received).map(s=>`<tr><td>${client(s.client).name}</td><td>${s.note||'—'}</td><td>${s.due}</td><td class="red">${br(s.total-s.received)}</td><td>${status(s)}</td><td><button class="btn light" onclick="toast('Cobrança selecionada para '+client(${s.client}).name)">Cobrar</button></td></tr>`).join('');
+paymentsTable.innerHTML=db.payments.slice().reverse().map(p=>`<tr><td>${p.date}</td><td>${client(p.client).name}</td><td class="green">${br(p.value)}</td><td>${p.method}</td><td>${p.ref}</td></tr>`).join('');
+notesList.innerHTML=db.notes.map(n=>`<div class="list"><span><b>${n.note}</b><br><span class="muted">Venda ${n.sale} · ${n.date}</span></span><span>📄 Documento</span></div>`).join('')||'<p class="muted">Nenhuma nota cadastrada.</p>';
+productsTable.innerHTML=db.products.map(p=>`<tr><td>${p.name}</td><td>${br(p.price)}</td><td>${p.stock}</td></tr>`).join('');
+let cities={};db.sales.forEach(s=>cities[s.city]=(cities[s.city]||0)+s.total);let cityHtml=Object.entries(cities).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="list"><span>${c}</span><b>${br(v)}</b></div>`).join('');cityReport.innerHTML=cityHtml;reportFull.innerHTML=cityHtml;dashCharges.innerHTML=db.sales.filter(s=>s.total>s.received).slice(0,5).map(s=>`<div class="list"><span><b>${client(s.client).name}</b><br><span class="muted">Venc. ${s.due}</span></span><b class="red">${br(s.total-s.received)}</b></div>`).join('')||'<p class="muted">Tudo em dia.</p>';
+ticket.textContent=br(db.sales.length?t.t/db.sales.length:0);taxa.textContent=(t.t?Math.round(t.r/t.t*100):0)+'%';qtdVendas.textContent=db.sales.length;
+}
+function show(id,el){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');render()}
+function openSale(){modalBox.innerHTML=`<h2>Nova venda</h2><div class="formgrid"><div class="field"><label>Cliente</label><select id="fclient">${db.clients.map(c=>`<option value="${c.id}">${c.name} — ${c.city}</option>`).join('')}</select></div><div class="field"><label>Cidade</label><input id="fcity"></div><div class="field"><label>Valor da venda</label><input id="fvalue" type="number" step="0.01" value="0"></div><div class="field"><label>Valor recebido</label><input id="freceived" type="number" step="0.01" value="0"></div><div class="field"><label>Vencimento</label><input id="fdue" type="date"></div><div class="field"><label>Número da nota</label><input id="fnote" placeholder="000013"></div><div class="field full"><label>Foto da nota</label><input id="fphoto" type="file" accept="image/*"></div></div><div class="actions"><button class="btn light" onclick="closeModal()">Cancelar</button><button class="btn goldbtn" onclick="saveSale()">Salvar venda</button></div>`;modal.classList.add('show');fcity.value=client(db.clients[0]?.id).city;fclient.onchange=()=>fcity.value=client(fclient.value).city}
+function saveSale(){let s={id:(Math.max(0,...db.sales.map(x=>x.id))+1),date:new Date().toISOString().slice(0,10),client:+fclient.value,city:fcity.value,total:+fvalue.value||0,received:+freceived.value||0,due:fdue.value||new Date().toISOString().slice(0,10),note:fnote.value||'Nota '+String(Math.max(0,...db.sales.map(x=>x.id))+1).padStart(6,'0')};db.sales.unshift(s);if(s.received>0)db.payments.push({date:s.date,client:s.client,value:s.received,method:'PIX',ref:'Venda '+String(s.id).padStart(6,'0')});db.notes.push({sale:s.id,note:s.note,date:s.date});save();closeModal();render();toast('Venda salva com sucesso')}
+function openClient(){modalBox.innerHTML=`<h2>Novo cliente</h2><div class="formgrid"><div class="field"><label>Nome</label><input id="cname"></div><div class="field"><label>Telefone</label><input id="cphone"></div><div class="field full"><label>Cidade</label><input id="ccity"></div></div><div class="actions"><button class="btn light" onclick="closeModal()">Cancelar</button><button class="btn greenbtn" onclick="saveClient()">Salvar cliente</button></div>`;modal.classList.add('show')}
+function saveClient(){if(!cname.value.trim())return toast('Informe o nome do cliente');db.clients.push({id:Date.now(),name:cname.value.trim(),phone:cphone.value,city:ccity.value});save();closeModal();render();toast('Cliente salvo')}
+function openProduct(){modalBox.innerHTML=`<h2>Novo produto</h2><div class="formgrid"><div class="field"><label>Produto</label><input id="pname"></div><div class="field"><label>Preço</label><input id="pprice" type="number" step="0.01"></div><div class="field"><label>Estoque</label><input id="pstock" type="number"></div></div><div class="actions"><button class="btn light" onclick="closeModal()">Cancelar</button><button class="btn blue" onclick="saveProduct()">Salvar produto</button></div>`;modal.classList.add('show')}
+function saveProduct(){if(!pname.value.trim())return toast('Informe o produto');db.products.push({id:Date.now(),name:pname.value.trim(),price:+pprice.value||0,stock:+pstock.value||0});save();closeModal();render();toast('Produto salvo')}
+function closeModal(){modal.classList.remove('show')}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200)}
+function globalSearch(q){q=q.toLowerCase();document.querySelectorAll('#clientsTable tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none');if(q)show('clientes')}
+render();
+</script>
+</body></html>
